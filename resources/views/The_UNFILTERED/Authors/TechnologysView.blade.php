@@ -1,0 +1,47 @@
+@extends('layouts.website')
+
+@section('title', 'THE UNFILTERED, GLOBAL NEWS AGENCY')
+
+@section('meta')
+    <meta name="description" content="Stay updated with the latest news from The Unfiltered, Global News Agency. We provide unbiased and comprehensive news coverage.">
+    <meta name="keywords" content="news, global news, unfiltered news, latest news, current events">
+@endsection
+
+@section('content')
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 border-l-2 border-lime-600">
+ 
+         
+        <main class="container mx-auto bg-transparent mt-8">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+                @foreach($Technology as $item)
+                    <article class="mb-4 rounded-lg ">
+                        <a href="{{ route('technology.show', $item->slug) }}" class="block p-4 mt-4"> <header>
+                            <h2 class="text-xl font-bold text-blue-700">{{ $item->title }}</h2>
+                            <p class=" text-gray-900 text-xl font-bold">{{ $item->description }}</p></header>
+                            @if($item->important_link)
+                                <a href="{{ $item->important_link }}" target="_blank" class="text-blue-600 hover:underline mt-2 block">
+                                    Read More
+                                </a>
+                            @endif
+                            @if($item->image_url)
+                            <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-auto mt-2 rounded">
+                        @endif
+                                                </a><span class="flex flex-grow gap-2">
+                                                <p class="text-lg font-bold text-blue-900 mt-2"><a class="ring-1 rounded-lg bg-green-400 p-2 " href="{{route('technology.edit',$item->id)}}">Edit</a></p>
+                                                
+                                                <form action="{{ route('technology.destroy', $item->id) }}" method="get" onsubmit="return confirmDelete();">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="bg-red-600 p-2 ring-1 rounded-lg">Delete</button>
+                                                </form></span>
+                    </article>
+                @endforeach
+            </div>
+        </main>
+    </div>
+    <script>
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this news story?');
+        }
+    </script>
+@endsection
