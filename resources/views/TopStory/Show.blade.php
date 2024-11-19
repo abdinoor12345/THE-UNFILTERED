@@ -34,17 +34,23 @@
 @endsection
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+<div class="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
     <h1 class="text-2xl font-bold text-blue-800 text-center">{{ $post->title }}</h1>
     <p class="text-gray-700 text-lg font-bold text-center">{{ $post->description }}</p>
-    <span class="text-center text-primary font-bold">{{ $post->views }} views</span>
+    <span class="text-center text-black font-bold">{{ $post->views }} views</span>
     @if ($post->user)
-    <span class="text-center text-primary font-bold  m-2 border-l-2 border-slate-800">  {!! \App\Helpers\replaceWordsWithLinks($post->user->name, $links) !!}
+    <span class="text-center text-primary font-bold  m-2  ">  {!! \App\Helpers\replaceWordsWithLinks($post->user->name, $links) !!}
     </span>
 
     @endif
-     <span class="text-primary">{{ $post->created_at->diffForHumans() }}</span> • 
+     <span class="text-black">{{ $post->created_at->diffForHumans() }}</span> • 
 
+     <div class="social-btn-sp text-center py-4">
+      <h1 class="text-blue-900 font-bold text-center text-lg">Share Our Contents</h1>
+      <div class=" flex justify-left space-x-2 text-red-600">
+          {!! $shareButtons !!}
+      </div>
+  </div> 
     @if($post->image_url)
 
     <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-4">@endif

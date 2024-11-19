@@ -34,17 +34,25 @@
 @endsection
 
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 border-l-2 border-red-400">
+<div class=" mx-auto px-4 sm:px-6 lg:px-8 mt-16  ">
     <h1 class="text-2xl font-bold text-blue-800 text-center">{{ $post->title }}</h1>
     <p class="text-gray-700 text-sm font-bold text-center whitespace-pre-line">{{ $post->description }}</p>
-    <span class="text-center   font-bold text-primary">{{ $post->views }} views</span>
-    <span class="text-center   font-bold  m-2 border-l-2 border-slate-800 text-primary">{{ $post->user->name }} </span>
-    <span class="text-primary">{{ $post->created_at->diffForHumans() }}</span> • 
+    <span class="text-center    text-black">{{ $post->views }} views</span>
+    <span class="text-center   font-bold  m-2   text-primary"> 
+      {!! \App\Helpers\replaceWordsWithLinks($post->user->name, $links) !!}
 
+    </span>
+    <span class="text-black">{{ $post->created_at->diffForHumans() }}</span> • 
+    <div class="social-btn-sp text-center py-4">
+      <h1 class="text-primary text-center text-lg">Share Our Contents</h1>
+      <div class="flex  space-x-8 text-red-600">
+          {!! $shareButtons !!}
+      </div>
+  </div>
     @if($post->image_url)
 
-    <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-4">@endif
-    <p class="mt-4 text-lg font-bold ml-0 whitespace-pre-line">
+    <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-1">@endif
+    <p class="mt-4 text-lg font-bold ml-0 whitespace-pre-line bg-zinc-50 p-6 m-1">
       {!! \App\Helpers\replaceWordsWithLinks($post->content, $links) !!}
   </p>     @if($post->important_link)
         <a href="{{ $post->important_link }}" class="text-blue-500 underline" target="_blank">Read More</a>

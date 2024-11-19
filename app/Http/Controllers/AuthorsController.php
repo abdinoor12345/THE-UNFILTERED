@@ -3,8 +3,10 @@
 namespace App\Http\Controllers;
 
 use App\Models\Business;
+use App\Models\Link;
 use App\Models\Opinion;
 use App\Models\Top_Story;
+use App\Models\Video;
 use Illuminate\Http\Request;
 use App\Models\Trending;
 use App\Models\Sport;
@@ -43,6 +45,15 @@ class AuthorsController extends Controller
         return view('The_UNFILTERED/Authors/BusinessView', ['business' => $business]);
   
     }
+    public function LinkPage(){
+        $Link= Link::orderBy('created_at', 'desc')->get();
+        return view('The_UNFILTERED/Authors/LinksView', ['Link' => $Link]);
+  
+    }
 
-
+    public function VideoPage(){
+        $video= Video::orderBy('created_at', 'desc')->get();
+        return view('The_UNFILTERED/Authors/Videosview', ['video' => $video]);
+  
+    }
  }

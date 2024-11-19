@@ -36,7 +36,7 @@
                     <img src="{{ $item->image_url }}" alt="{{ $item->title }}" class="w-full h-auto mt-4 rounded-lg">
                     @endif
                 </a>
-                <div class="flex flex-grow gap-4 item-center border-l-2 border-red-700">    
+                <div class="flex flex-grow gap-4 item-center  ">    
                     <p class="text-black text-sm">   Posted:{{ $item->created_at->diffForHumans() }}</p>
                         @if($item->user)
        <span class="  text-green-800 text-sm "> Posted by: {{$item->user->name}}</span>@else
@@ -53,7 +53,13 @@
         @else
         <h1 class="text-lg text-white text-center font-bold bg-red-300">No Updates</h1>
         @endif
-    </main>
+    </main>  <div class="social-btn-sp text-center py-4">
+        <h1 class="text-primary text-center text-lg">Share Our Contents</h1>
+        <div class="flex justify-center space-x-8 text-red-600">
+            {!! $shareButtons !!}
+        </div>
+    </div>
+    
     <aside class="container mx-auto mt-12">
         <h2 class="text-2xl font-bold text-purple-800 text-center font-serif">Popular Posts</h2>
         <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

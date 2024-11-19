@@ -6,6 +6,7 @@ use App\Models\Business;
 use App\Models\Link;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jorenvh\Share\ShareFacade as Share;
 
 class BusinessController extends Controller
 {
@@ -33,17 +34,37 @@ Business::create($validatedData);
 return redirect()->back()->with('success', 'News submitted successfully!');}
 public function index(){
     $popularPosts = Business::orderBy('views', 'desc')->take(3)->get();   
+    $shareButtons = Share::page(
+        'https://unfiltered.com/business',    
+        'THE UNFILTERED'    
+    )
+    ->facebook()
+    ->twitter()
+    ->linkedin()
+    ->telegram()
+    ->whatsapp();   
 
     $latest=Business::orderBy('created_at','desc')->first();
     $news = Business::orderBy('created_at', 'desc')->get();
-    return view('The_UNFILTERED.Business.Index',['latest'=>$latest,'news'=>$news,'popularPosts'=>$popularPosts]);
+    return view('The_UNFILTERED.Business.Index',['latest'=>$latest,'news'=>$news,'popularPosts'=>$popularPosts,'shareButtons'=>$shareButtons]);
 
 }
 public function show($slug){
+    $shareButtons = Share::page(
+        'https://unfiltered.com/business',    
+        'THE UNFILTERED'    
+    )
+    ->facebook()
+    ->twitter()
+    ->linkedin()
+    ->telegram()
+    ->whatsapp();   
     $links=Link::all();
     $post=Business::where('slug',$slug)->firstOrFail();
     $post->increment('views');
-    return view('The_UNFILTERED.Business.Show',compact('post','links'));
+    $relatedPosts = $post->getRelatedPosts();
+
+    return view('The_UNFILTERED.Business.Show',compact('post','links','relatedPosts','shareButtons'));
 }
    public function edit($id) {
     $business=Business::findOrFail($id);

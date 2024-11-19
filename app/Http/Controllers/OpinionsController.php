@@ -6,6 +6,7 @@ use App\Models\Link;
 use App\Models\Opinion;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jorenvh\Share\ShareFacade as Share;
 
 class OpinionsController extends Controller
 {
@@ -37,26 +38,43 @@ class OpinionsController extends Controller
 
      }
      public function get_news() {
+      $shareButtons = Share::page(
+         'https://unfiltered.com/opinions',    
+         'THE UNFILTERED'    
+     )
+     ->facebook()
+     ->twitter()
+     ->linkedin()
+     ->telegram()
+     ->whatsapp();
       $popularPosts = Opinion::orderBy('views', 'desc')->take(3)->get();   
 
       $latest=Opinion::orderBy('created_at','desc')->first();
         $news = Opinion::orderBy('created_at', 'desc')->get();
-       return view('Opinion/Index', ['news' => $news,'latest'=>$latest,'popularPosts'=>$popularPosts]);
+       return view('Opinion/Index', ['news' => $news,'latest'=>$latest,'popularPosts'=>$popularPosts,'shareButtons'=>$shareButtons]);
    }
-   public function show($slug){
-      $links=Link::all();
-      $post=Opinion::where('slug', $slug)->firstOrFail();
-      $post->increment('views');
-      $relatedPosts = $post->getRelatedPosts();
+   public function show($slug)
+{
+    $shareButtons = Share::page(
+        'https://unfiltered.com/opinions',
+        'THE UNFILTERED'
+    )->facebook()->twitter()->linkedin()->telegram()->whatsapp();
 
-      return view('Opinion/Show',compact('post','links','relatedPosts'));
-   }
-   public function edit_opinions($id)
-   {
-       $Opinion = Opinion::find($id);
-       return view('Opinion/Edit', compact('Opinion'));
-   }
-     
+    $links = Link::all();
+
+     $type = 'politics';  // or adjust dynamically based on model type, e.g., 'sports', 'business'
+
+    $post = Opinion::where('slug', $slug)->firstOrFail();
+    $post->increment('views');
+    $relatedPosts = $post->getRelatedPosts();
+    $likeCount = $post->likes()->count();
+
+    return view('Opinion/Show', compact('post', 'links', 'relatedPosts', 'shareButtons', 'type'));
+}public function edit_opinions($id){
+   $Opinion=Opinion::findOrFail($id);
+   return view('Opinion.Edit',compact('Opinion'));
+}
+
    public function update_opinions(Request $request, $id)
    {
         $validatedData = $request->validate([
@@ -78,7 +96,7 @@ class OpinionsController extends Controller
    
         $Opinion->update($validatedData);  
    
-        return redirect()->route('news.edit', $Opinion->id)->with('success', 'News updated successfully!');
+        return redirect()->route('opinions', $Opinion->id)->with('success', 'News updated successfully!');
    }
    public function destroy_news($id){
       $Opinion=Opinion::find($id);

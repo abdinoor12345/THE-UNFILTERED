@@ -1,4 +1,4 @@
-@extends('layouts.website')
+@extends('layouts.admin')
 
 @section('title', 'THE UNFILTERED, GLOBAL NEWS AGENCY')
 
@@ -29,11 +29,19 @@
                                                 </a><span class="d-flex">
                                                 <p class="text-lg font-bold text-blue-900"><a href="{{route('sports.edit',$item->id)}}">Edit</a></p>
                                                 
-                                                {{-- <p class="text-lg font-bold text-red-900"><a href="{{route('delete.top_stories_news',$item->id)}}">delete</a></p> --}}
-</span>
+                                                <form action="{{ route('delete.sports', $item->id) }}" method="get" onsubmit="return confirmDelete();">
+                                                    @csrf
+                                                    @method('DELETE')
+                                                    <button type="submit" class="bg-red-600 p-2 ring-1 rounded-lg ml-4">Delete</button>
+                                                </form></span>
                     </article>
                 @endforeach
             </div>
         </main>
     </div>
+    <script>
+        function confirmDelete() {
+            return confirm('Are you sure you want to delete this news story?');
+        }
+    </script>
 @endsection

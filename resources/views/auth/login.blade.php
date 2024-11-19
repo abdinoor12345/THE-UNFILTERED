@@ -42,6 +42,10 @@
             <x-primary-button class="ms-3">
                 {{ __('Log in') }}
             </x-primary-button>
-        </div>
+        </div><span class="flex flex-row gap-2 mt-2">
+            <p class="text-lg font-bold">Dont have an aacount?</p>
+            <p>   <a  class ="btn btn-success" href="/register">Register</a></p>
+        </span>
+        
     </form>
 </x-guest-layout>

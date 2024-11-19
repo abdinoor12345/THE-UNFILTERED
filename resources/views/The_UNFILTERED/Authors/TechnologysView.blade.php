@@ -1,4 +1,4 @@
-@extends('layouts.website')
+@extends('layouts.admin')
 
 @section('title', 'THE UNFILTERED, GLOBAL NEWS AGENCY')
 
@@ -12,7 +12,7 @@
  
          
         <main class="container mx-auto bg-transparent mt-8">
-            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-4">
+            <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
                 @foreach($Technology as $item)
                     <article class="mb-4 rounded-lg ">
                         <a href="{{ route('technology.show', $item->slug) }}" class="block p-4 mt-4"> <header>

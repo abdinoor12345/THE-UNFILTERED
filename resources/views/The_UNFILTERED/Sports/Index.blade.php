@@ -8,25 +8,25 @@
 @endsection
 
 @section('content')
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 border-l-2 border-red-400">
+    <div class="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 border-l-2 border-red-400">
         @if ($latest)
             <h1 class="text-3xl font-bold text-blue-800 text-center">⚽ Sports Around The World</h1>
             <div class="flex flex-grow shadow-md gap-8 justify-center mt-4">
                 <a href="/soccer" target="_blank" class="flex items-center">
                     <span class="mr-2">⚽</span>
-                    <h1 class="text-lg font-bold">Soccer</h1>
+                    <h1 class="text-sm font-bold">Soccer</h1>
                 </a>
                 <a href="/cricket" class="flex items-center">
-                    <span class="mr-2">🏏</span>
-                    <h1 class="text-lg font-bold">Cricket</h1>
+                    <span class="mr-1">🏏</span>
+                    <h1 class="text-sm font-bold">Cricket</h1>
                 </a>
                 <a href="/hockey" target="_blank" rel="noopener noreferrer" class="flex items-center">
                     <span class="mr-2">🏒</span>
-                    <h1 class="text-lg font-bold">Hockey</h1>
+                    <h1 class="text-sm  font-bold">Hockey</h1>
                 </a>
                 <a href="/basketball" class="flex items-center">
                     <span class="mr-2">🏀</span>
-                    <h1 class="text-lg font-bold">Basketball</h1>
+                    <h1 class="text-sm font-bold">Basketball</h1>
                 </a>
             </div>
 
@@ -65,6 +65,12 @@
                 @endforeach
             </div>
 <hr/>
+<div class="social-btn-sp text-center py-4">
+    <h1 class="text-primary text-center text-lg">Share Our Contents</h1>
+    <div class="flex justify-center space-x-8 text-red-600">
+        {!! $shareButtons !!}
+    </div>
+</div>
 <aside class="container mx-auto mt-12">
     <h2 class="text-2xl font-bold text-purple-800 text-center font-serif">Popular Posts</h2>
     <div class="grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">
@@ -86,8 +92,8 @@
             </article>
         @endforeach
     </div>
-</aside>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4  border-l-4 border-red-900  gap-4 justify-between mt-8">
+</aside><h1 class="text-lg text-primary text-center font-serif">Europe Leagues</h1>
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4     gap-4 justify-between mt-8">
                 <div class=" ml-2 block shadow-md rounded-lg bg-cyan-500">
                     <a href="https://www.premierleague.com/" target="_blank" rel="noopener noreferrer">
                         <h1 class="text-lg font-bold text-red-600">⚽ EPL Matches, Live Scores, Table</h1>

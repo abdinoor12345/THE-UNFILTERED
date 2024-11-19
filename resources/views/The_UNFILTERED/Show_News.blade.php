@@ -5,43 +5,67 @@
 @section('meta')
     <meta name="description" content="{{ $post->description }}">
 @endsection
-
+<style>.p{
+    font-family: "Times New Roman";
+    
+  }
+  .h1{  font-family: Arial, Helvetica, sans-serif;
+  }
+  .h3 {
+  font-family: "Lucida Console", "Courier New", monospace;
+}</style>
 @section('content')
-<div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 border-l-4 border-indigo-500">
+<div class="max-w-9xl mx-auto px-4 sm:px-6 lg:px-8 mt-16  ">
     <!-- Post Content -->
     <h1 class="text-2xl font-bold text-blue-800 text-center underline mb-2">{{ $post->title }}</h1>
     <p class="text-gray-700 text-sm font-bold text-center">{{ $post->description }}</p>
-    <span class="text-center text-primary font-bold lg:mx-6">{{ $post->views }} views</span>
+    <span class="text-center text-black font-bold lg:mx-6">{{ $post->views }} views</span>
     @if ($post->user)
         <span class="text-center text-primary font-bold lg:mx-8">   
-                 {!! \App\Helpers\replaceWordsWithLinks($post->user->name, $links) !!}
+            By {!! \App\Helpers\replaceWordsWithLinks($post->user->name, $links) !!}
         </span>
     @else
         <span class="text-center text-gray-500">Anonymous</span>
     @endif
-    <span class="text-primary">{{ $post->created_at->diffForHumans() }}</span> • 
+    <span class="text-black">{{ $post->created_at->diffForHumans() }}</span> • 
+    <div class="social-btn-sp text-center py-4">
+        <h1 class="text-blue-700 text-center text-lg mb-4 font-bold">Share Our Contents</h1>
+        <div class="flex justify-left space-x-2 text-red-600">
+            {!! $shareButtons !!}
+        </div>
+    </div>
     @if($post->image_url)
         <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-4">
     @endif
-    <p class="mt-4 text-lg font-bold ml-0 whitespace-pre-line tracking-wider space-x-4">
-        {!! \App\Helpers\replaceWordsWithLinks($post->content, $links) !!}
-    </p>
-    @if($post->important_link)
-        <a href="{{ $post->important_link }}" class="text-blue-500 underline" target="_blank">Read More</a>
-    @endif
 
-    <!-- Like Button -->
-    <div class="flex items-center mt-4">
-        <button id="like-button-{{ $post->id }}" class="bg-blue-500 text-white px-4 py-2 rounded" onclick="likePost({{ $post->id }})">
-            Like
-        </button>
-        <span id="likes-count-{{ $post->id }}" class="ml-2">{{ $post->likes }} Likes</span>
-    </div>
+    <!-- Content display logic -->
+    <p class="mt-4 text-lg font-medium ml-0 whitespace-pre-line tracking-wider space-x-4 rounded-lg shadow-xl p-6">
+        @if(auth()->check())
+             {!! \App\Helpers\replaceWordsWithLinks($post->content, $links) !!}
+        @else
+             {!! \Illuminate\Support\Str::limit(\App\Helpers\replaceWordsWithLinks($post->content, $links), 1000) !!}
+            <br>
+            <a href="{{ route('login') }}" class="text-blue-500 font-mono">Log in to read more...</a>
+        @endif
+    </p>
+    <h3 class="text-gray-700 text-2xl  font-light text-center mt-4 text-primary">{{ $post->heading1}}</h3>
+
+    <p class="mt-4 text-lg font-medium ml-0 whitespace-pre-line tracking-wider space-x-4 rounded-lg shadow-xl p-6">
+        @if(auth()->check())
+             {!! \App\Helpers\replaceWordsWithLinks($post->content1, $links) !!}
+        @else
+             {!! \Illuminate\Support\Str::limit(\App\Helpers\replaceWordsWithLinks($post->content1, $links), 1000) !!}
+            <br>
+            <a href="{{ route('login') }}" class="text-blue-500 font-mono">Log in to read more...</a>
+        @endif
+    </p>
+
+   
 </div>
 
 <!-- Related Posts Section -->
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-    <h2 class="text-xl font-bold text-blue-800 text-center">Related Posts</h2>
+    <h1 class="text-xl font-bold text-blue-800 text-center text-pretty">Related Posts</h1>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
         @foreach($relatedPosts as $related)
         <div class="p-4 bg-white shadow-md rounded-lg">

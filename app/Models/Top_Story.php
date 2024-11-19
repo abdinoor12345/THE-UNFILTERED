@@ -67,5 +67,8 @@ class Top_Story extends Model
     // Return related posts only if there are matches; otherwise, return an empty collection
     return $relatedPosts->isNotEmpty() ? $relatedPosts : collect();
 }
- 
+public function likes()
+{
+    return $this->morphToMany(Like::class,'likeable');
+}
 }

@@ -10,6 +10,7 @@ use App\Models\Hockey;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jorenvh\Share\ShareFacade as Share;
 
 class SportsController extends Controller
 {
@@ -84,18 +85,35 @@ class SportsController extends Controller
         $news = Cache::remember('all_sport_news', 60, function () {
             return Sport::orderBy('created_at', 'desc')->limit(10)->get();
         });
-        $popularPosts = Sport::orderBy('views', 'desc')->take(3)->get();   
+        $popularPosts = Sport::orderBy('views', 'desc')->take(3)->get();
+        $shareButtons = Share::page(
+            'https://unfiltered.com/sports',    
+            'THE UNFILTERED'    
+        )
+        ->facebook()
+        ->twitter()
+        ->linkedin()
+        ->telegram()
+        ->whatsapp();   
 
-      return view('The_UNFILTERED/Sports/Index', ['news' => $news,'latest'=>$latest,'popularPosts'=>$popularPosts]);
+      return view('The_UNFILTERED/Sports/Index', ['news' => $news,'latest'=>$latest,'popularPosts'=>$popularPosts,'shareButtons'=> $shareButtons],);
   }
   public function show($slug)
   {       $links = Link::all();
-
+    $shareButtons = Share::page(
+        'https://unfiltered.com/sports',    
+        'THE UNFILTERED'    
+    )
+    ->facebook()
+    ->twitter()
+    ->linkedin()
+    ->telegram()
+    ->whatsapp();  
        $post =Sport::where('slug', $slug)->firstOrFail();
  $post->increment('views');
  $relatedPosts = $post->getRelatedPosts();
 
-       return view('The_UNFILTERED/Sports/Show', compact('post','links','relatedPosts'));
+       return view('The_UNFILTERED/Sports/Show', compact('post','links','relatedPosts','shareButtons'));
   }
     public function edit_news($id)
   {
@@ -132,33 +150,71 @@ class SportsController extends Controller
 
       if ($SportSport) {
           $SportSport->delete();
-          return redirect()->route('viewlandingpage')->with('success', 'News deleted successfully!');
+          return redirect()->route('sports.get')->with('success', 'News deleted successfully!');
       }
 
-      return redirect()->route('viewlandingpage')->with('error', 'News not found!');
+      return redirect()->route('delete.sports')->with('error', 'News not found!');
   } 
   public function Soccer_show($slug)
-  {
+  {  $shareButtons = Share::page(
+    'https://unfiltered.com/sports',    
+    'THE UNFILTERED'    
+)
+->facebook()
+->twitter()
+->linkedin()
+->telegram()
+->whatsapp();  
        $post =Soccer::where('slug', $slug)->firstOrFail();
   $links=Link::all();
-      return view('The_UNFILTERED/Sports/Soccer_Show', compact('post','links'));
+  $post->increment('views');
+
+      return view('The_UNFILTERED/Sports/Soccer_Show', compact('post','links','shareButtons'));
   }  public function Cricket_show($slug)
-  {$links=Link::all();
+  { $shareButtons = Share::page(
+    'https://unfiltered.com/sports',    
+    'THE UNFILTERED'    
+)
+->facebook()
+->twitter()
+->linkedin()
+->telegram()
+->whatsapp();  
+    $links=Link::all();
        $post =Cricket::where('slug', $slug)->firstOrFail();
-  
-      return view('The_UNFILTERED/Sports/Cricket_show', compact('post','links'));
+       $post->increment('views');
+
+      return view('The_UNFILTERED/Sports/Cricket_show', compact('post','links','shareButtons'));
   }
   public function Basketball_show($slug)
   {$links=Link::all();
        $post = Basketball::where('slug', $slug)->firstOrFail();
-  
-      return view('The_UNFILTERED/Sports/BasketShow', compact('post','links'));
+       $shareButtons = Share::page(
+        'https://unfiltered.com/sports',    
+        'THE UNFILTERED'    
+    )
+    ->facebook()
+    ->twitter()
+    ->linkedin()
+    ->telegram()
+    ->whatsapp(); 
+    $post->increment('views');
+      return view('The_UNFILTERED/Sports/BasketShow', compact('post','links','shareButtons'));
   }
   public function   hockey_show($slug)
-  {$links=Link::all();
+  {$shareButtons = Share::page(
+    'https://unfiltered.com/sports',    
+    'THE UNFILTERED'    
+)
+->facebook()
+->twitter()
+->linkedin()
+->telegram()
+->whatsapp();  
+    $links=Link::all();
        $post = Hockey::where('slug', $slug)->firstOrFail();
-  
-      return view('The_UNFILTERED/Sports/HockeyShow', compact('post','links'));
+  $post->increment('views');
+      return view('The_UNFILTERED/Sports/HockeyShow', compact('post','links','shareButtons'));
   }
        
  }

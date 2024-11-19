@@ -12,23 +12,47 @@ class LinkController extends Controller
         return view('add-link');  }
 
     /**
-     * Store the newly created link in the database.
-     */
+      */
     public function store(Request $request)
     {
-        // Validate the input
-        $validatedData = $request->validate([
+         $validatedData = $request->validate([
             'word' => 'required|string|max:255',
             'url' => 'required|url|max:1000',
         ]);
 
-        // Create a new link record in the database
-        Link::create([
+         Link::create([
             'word' => $validatedData['word'],
             'url' => $validatedData['url'],
         ]);
 
-        // Redirect back to the form with a success message
-        return redirect()->route('links.create')->with('success', 'Link added successfully!');
+         return redirect()->route('links.create')->with('success', 'Link added successfully!');
     }
+     
+    public function edit_links($id)
+    {
+        $link = Link::findOrFail($id);
+        return view('Link.Edit', compact('link'));
+    }
+    
+    public function update_links(Request $request, $id)
+    {
+        $validatedData = $request->validate([
+            'word' => 'required|max:255',
+            'url' => 'required|url',
+        ]);
+    
+        $link = Link::findOrFail($id);
+        $link->update($validatedData);
+    
+        return redirect()->route('LinkPage')->with('success', 'Link updated successfully!');
+    }
+       public function destroy_news($id){
+      $link=Link::find($id);
+      if($link){
+         $link->delete();
+         return  redirect()->route('LinkPage')->with('success','news Deleted succefull');
+      }
+      return redirect()->route( 'LinkPage')->with('errror','whoops! error Occured');
+   } 
+
 }

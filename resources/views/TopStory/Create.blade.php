@@ -1,4 +1,4 @@
-@extends('layouts.website')
+@extends('layouts.admin')
 @section('title', 'TRENDING News')
 
 @section('content')

@@ -13,7 +13,7 @@ return new class extends Migration
      public function up()
      {
          Schema::table('trendings', function (Blueprint $table) {
-             $table->integer('likes')->default(0); // Default 0 likes
+             $table->integer(column: 'likes')->default(0); // Default 0 likes
          });
      }
      

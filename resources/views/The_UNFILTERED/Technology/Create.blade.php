@@ -1,4 +1,4 @@
-@extends('layouts.website')
+@extends('layouts.admin')
 
 @section('title', 'Technology,Hardware,Software,Programming,Python,PHP,JavaScript')
 

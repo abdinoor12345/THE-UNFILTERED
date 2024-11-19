@@ -17,12 +17,8 @@ class Trending extends Model
       'important_link',
       'slug',
       'user_id',
-      'link1',
-      'link2',
-      'link3',
-      'link_text1',
-      'link_text2',
-      'link_text3',
+       'heading1',
+       'content1'
     ];
     protected static function booted()
     {
@@ -71,7 +67,7 @@ public function getRelatedPosts()
 }
 public function likes()
 {
-    return $this->hasMany(PostLike::class);
+    return $this->hasMany(Like::class);
 }
 
 }

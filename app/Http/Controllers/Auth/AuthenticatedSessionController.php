@@ -15,9 +15,14 @@ class AuthenticatedSessionController extends Controller
      * Display the login view.
      */
     public function create(): View
-    {
-        return view('auth.login');
+{
+     if (!session()->has('url.intended')) {
+        session(['url.intended' => url()->previous()]);
     }
+
+    return view('auth.login');
+}
+
 
     /**
      * Handle an incoming authentication request.
@@ -25,13 +30,12 @@ class AuthenticatedSessionController extends Controller
     public function store(LoginRequest $request): RedirectResponse
     {
         $request->authenticate();
-
+    
         $request->session()->regenerate();
-
-        return redirect()->intended(route('dashboard', absolute: false));
+    
+         return redirect()->intended(url()->previous() ?: route('home'));
     }
-
-    /**
+        /**
      * Destroy an authenticated session.
      */
     public function destroy(Request $request): RedirectResponse

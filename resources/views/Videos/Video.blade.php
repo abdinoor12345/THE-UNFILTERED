@@ -11,9 +11,28 @@
 <div class="mx-auto px-4 sm:px-6 lg:px-8 mt-16 bg-slate-900 border-l-8 border-sky-500">
     <main class="mx-auto mt-8">
         <div class="">
-            <h1 class="font-mono underline text-2xl text-pink-700 font-bold mb-4">
+            
+            <h1 class="font-mono underline text-2xl text-pink-700 font-bold mt-10">
                 {{ $headerText ?? 'Stay informed with our latest video reports, covering breaking news, in-depth analysis, and exclusive interviews from around the globe.' }}
             </h1>
+            <div class="flex flex-grow shadow-md gap-8   mt-4 fixed top-12 overflow-auto bg-white left-0 right-0 z-10">
+                <a href="/Interviews" target="_blank" class="flex items-center">
+                    <span class="mr-2 "></span>
+                    <h1 class="text-lg font-bold">Interviews</h1>
+                </a>
+                <a href="/Livestream" class="flex items-center">
+                    <span class="mr-2"></span>
+                    <h1 class="text-lg font-bold">Livestream</h1>
+                </a>
+                <a href="/TrendingNow" target="_blank" rel="noopener noreferrer" class="flex items-center">
+                    <span class="mr-2"></span>
+                    <h1 class="text-lg font-bold">TrendingNow</h1>
+                </a>
+                <a href="/SpecialReports" class="flex items-center">
+                    <span class="mr-2"></span>
+                    <h1 class="text-lg font-bold">SpecialReports</h1>
+                </a>
+            </div>
 
             <!-- Dynamic Video Embeds -->
             <div class="mt-6 grid grid-cols-1 gap-4 md:grid-cols-2 lg:grid-cols-3">

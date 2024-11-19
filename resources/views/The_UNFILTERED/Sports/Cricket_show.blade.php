@@ -35,12 +35,27 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16 border-l-2 border-red-400">
+
     <h1 class="text-2xl font-bold text-blue-800 text-center">{{ $post->title }}</h1>
     <p class="text-gray-700 text-sm font-bold text-center">{{ $post->description }}</p>
+    <span class="text-center ml-4  text-black font-bold">{{ $post->views }} views</span>
+    <span class="text-center text-black font-bold  m-2 border-l-2 border-slate-800">  
+      @if ($post->user)
+      {!! \App\Helpers\replaceWordsWithLinks($post->user->name, $links) !!}
+
+      @endif
+     </span>
+    <span class="text-primary">{{ $post->created_at->diffForHumans() }}</span> • 
+
+    <div class="social-btn-sp text-center py-2">
+      <h1 class="text-primary text-center text-lg">Share Our Contents</h1>
+      <div class="flex justify-center space-x-8 text-red-600">
+          {!! $shareButtons !!}
+      </div></div>
     @if($post->image_url)
 
-    <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-4">@endif
-    <p class="mt-4 text-lg font-bold ml-0 whitespace-pre-line">
+    <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-0">@endif
+    <p class="mt-2 text-lg font-bold ml-0 whitespace-pre-line">
       {!! \App\Helpers\replaceWordsWithLinks($post->content, $links) !!}
   </p>     @if($post->important_link)
         <a href="{{ $post->important_link }}" class="text-blue-500 underline" target="_blank">Read More</a>

@@ -36,45 +36,49 @@
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
     <h1 class="text-2xl font-bold text-blue-800 text-center">{{ $post->title }}</h1>
-    <p class="text-gray-700 text-sm font-bold text-center">{{ $post->description }}</p>
-    <span class="text-center text-black font-bold">{{ $post->views }} views</span>
-    <span class="text-center text-black font-bold  m-2 border-l-2 border-slate-800">{{ $post->user->name }} </span>
-    <span class="text-primary">{{ $post->created_at->diffForHumans() }}</span> • 
-
+    <p class="text-gray-700 text-sm font-bold text-center mb-4">{{ $post->description }}</p>
+    <span class="text-center text-black font-bold ">{{ $post->views }} views</span>
+    <span class="text-center text-black font-bold  m-2 "> 
+        {!! \App\Helpers\replaceWordsWithLinks($post->user->name, $links) !!}
+    </span>
+    <span class="text-black">{{ $post->created_at->diffForHumans() }}</span> • 
+    <div class="social-btn-sp text-center py-4">
+        <h1 class="text-primary text-center text-lg">Share Our Contents</h1>
+        <div class="flex justify-center space-x-8 text-red-600">
+            {!! $shareButtons !!}
+        </div>
+    </div>
     @if($post->image_url)
-        <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-4">
+        <img src="{{ $post->image_url }}" alt="{{ $post->title }}" class="w-full h-auto mt-1">
     @endif
 
-    <p class="mt-4 text-lg font-bold ml-0 whitespace-pre-line">
+    <p class="mt-4 text-lg font-bold ml-0 whitespace-pre-line bg-zinc-50 rounded-xl p-6">
         {!! \App\Helpers\replaceWordsWithLinks($post->content, $links) !!}
     </p> 
-    @if($post->important_link)
-        <a href="{{ $post->important_link }}" class="text-blue-500 underline" target="_blank">Read More</a>
-    @endif
+    
 
     <!-- Additional Links Section -->
-    @if($post->link1 && $post->link_text1)
-        <div class="mt-4">
-            <a href="{{ $post->link1 }}" class="text-blue-500 underline" target="_blank">
-                {{ $post->link_text1 }}
-            </a>
-        </div>
-    @endif
+     
 
-    @if($post->link2 && $post->link_text2)
-        <div class="mt-2">
-            <a href="{{ $post->link2 }}" class="text-blue-500 underline" target="_blank">
-                {{ $post->link_text2 }}
-            </a>
-        </div>
-    @endif
+    
 
-    @if($post->link3 && $post->link_text3)
-        <div class="mt-2">
-            <a href="{{ $post->link3 }}" class="text-blue-500 underline" target="_blank">
-                {{ $post->link_text3 }}
-            </a>
-        </div>
-    @endif
+   
 </div>
+<div class="  mx-auto px-4 sm:px-6 lg:px-8 mt-16">
+    <h2 class="text-xl font-bold text-blue-800 text-center">Related Posts</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 mt-4">
+        @foreach($relatedPosts as $related)
+        <div class="p-4 bg-white shadow-md rounded-lg">
+            <a href="{{ route('opinions.show', $related->slug) }}" class="block">
+                <h3 class="text-lg font-bold text-indigo-600">{{ $related->title }}</h3>
+                <p class="text-gray-600 mt-2">{{ Str::limit($related->description, 100) }}</p>
+                @if($related->image_url)
+                <img src="{{ $related->image_url }}" alt="{{ $related->title }}" class="w-full h-auto mt-4">
+                @endif
+            </a>
+        </div>
+        @endforeach
+    </div>
+  </div>
+  
 @endsection

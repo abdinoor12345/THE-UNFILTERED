@@ -5,6 +5,8 @@ use App\Models\Link;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Top_Story;
 use Illuminate\Http\Request;
+use Jorenvh\Share\ShareFacade as Share;
+
 class TopStoryController extends Controller
 {
     public function create_news()
@@ -35,12 +37,20 @@ class TopStoryController extends Controller
         return redirect()->back()->with('success', 'News submitted successfully!');
     }
     public function Index()
-    {
+    { $shareButtons = Share::page(
+        'https://unfiltered.com/top_stories',    
+        'THE UNFILTERED'    
+    )
+    ->facebook()
+    ->twitter()
+    ->linkedin()
+    ->telegram()
+    ->whatsapp();
         $latest = Top_Story::orderBy('created_at', 'desc')->first();
         $popularPosts = Top_Story::orderBy('views', 'desc')->take(3)->get();   
 
         $news = Top_Story::latest()->skip(1)->paginate(10);
-        return view('TopStory/Index', ['news' => $news, 'latest' => $latest,'popularPosts'=>$popularPosts]);
+        return view('TopStory/Index', ['news' => $news, 'latest' => $latest,'popularPosts'=>$popularPosts,'shareButtons'=>$shareButtons]);
     }
     public function edit_news($id)
     {
@@ -70,17 +80,28 @@ class TopStoryController extends Controller
 
         $Top_Story->update($validatedData);
 
-        return redirect()->route('news.edit', $Top_Story->id)->with('success', 'News updated successfully!');
+        return redirect()->route('top_stories', $Top_Story->id)->with('success', 'News updated successfully!');
     }
     public function show($slug)
     {      $links = Link::all();
+        $shareUrl = url('/top_stories/' . $slug);
 
+        // Create share buttons with the dynamically generated URL
+        $shareButtons = Share::page(
+            $shareUrl,  // Use the dynamically generated URL
+            'THE UNFILTERED'
+        )
+        ->facebook()
+        ->twitter()
+        ->linkedin()
+        ->telegram()
+        ->whatsapp();
          $post = Top_Story::where('slug', $slug)->firstOrFail();
       $post->increment('views');
       $relatedPosts = $post->getRelatedPosts();
 
 
-        return view('TopStory/Show', compact('post','links','relatedPosts'));
+        return view('TopStory/Show', compact('post','links','relatedPosts','shareButtons'));
     }
     public function destroy_news($id)
     {
@@ -90,6 +111,6 @@ class TopStoryController extends Controller
             $Top_Story->delete();
             return redirect()->back();
          }
-        return redirect()->route('top.stories')->with('error', 'News not found!');
+        return redirect()->route('top_stories')->with('error', 'News not found!');
     }
 }

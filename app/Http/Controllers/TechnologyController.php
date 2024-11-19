@@ -6,6 +6,7 @@ use App\Models\Link;
 use App\Models\Technology;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Jorenvh\Share\ShareFacade as Share;
 
 class TechnologyController extends Controller
 {
@@ -39,19 +40,37 @@ class TechnologyController extends Controller
 }
 public function index(){      
     $popularPosts = Technology::orderBy('views', 'desc')->take(3)->get();   
-
+    $shareButtons = Share::page(
+        'https://unfiltered.com/technologies',    
+        'THE UNFILTERED'    
+    )
+    ->facebook()
+    ->twitter()
+    ->linkedin()
+    ->telegram()
+    ->whatsapp();   
 
     $latest= Technology::orderBy('created_at','desc')->first();
     $news =  Technology::orderBy('created_at', 'desc')->get();
-    return view('The_UNFILTERED.Technology.Index', ['news' => $news,'latest'=>$latest,'popularPosts'=> $popularPosts]);
+    return view('The_UNFILTERED.Technology.Index', ['news' => $news,'latest'=>$latest,'popularPosts'=> $popularPosts,'shareButtons'=>$shareButtons]);
 
 }
 public function show($slug){
+    $shareButtons = Share::page(
+        'https://unfiltered.com/technologies',    
+        'THE UNFILTERED'    
+    )
+    ->facebook()
+    ->twitter()
+    ->linkedin()
+    ->telegram()
+    ->whatsapp();  
        $links = Link::all();
     $post = Technology::where('slug', $slug)->firstOrFail();
     $post->increment('views');
+    $relatedPosts = $post->getRelatedPosts();
 
-    return view('The_UNFILTERED.Technology.Show',['post'=>$post,'links'=>$links]);
+    return view('The_UNFILTERED.Technology.Show',['post'=>$post,'links'=>$links,'relatedPosts'=>$relatedPosts,'shareButtons'=>$shareButtons],);
 }
 public function edit_technology($id){
     $technology=Technology::findOrFail($id);
@@ -64,18 +83,10 @@ public function update(Request $request, $id){
         'content' => 'required',
         'image_url' => 'nullable|url',
         'important_link' => 'nullable|url',
-        'link1'=>'nullable|url|max:255',
-        'link2'=>'nullable|url|max:255',
-        'link3'=>'nullable|url|max:255',
-        'link_text1'=>'nullable|url|max:500',
-        'link_text2'=>'nullable|url|max:500',
-        'link_text3'=>'nullable|url|max:500',
-
-
     ]);
     $technology= Technology::find($id);
     $technology->update($validatedData);
-    return redirect()->back();
+    return redirect()->route('technology.index')->with('successs','Page Updated Successfully');
 }
 public function destroy($id)
 {
@@ -83,7 +94,7 @@ public function destroy($id)
 
     if ($Technology) {
         $Technology->delete();
-        return redirect()->back();
+        return redirect()->route('technology.index')->with('successs','Page Deleted Successfully');
     }
 }
 }
