@@ -2,12 +2,15 @@
 
 use App\Http\Controllers\Admincontroller;
 use App\Http\Controllers\BusinessController;
-use App\Http\Controllers\Contactcontroller;
-use App\Http\Controllers\OpinionsController;
+use App\Http\Controllers\ChartController;
+ use App\Http\Controllers\Contactcontroller;
+use App\Http\Controllers\EbookController;
+ use App\Http\Controllers\OpinionsController;
 use App\Http\Controllers\PermissionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\Searchcontroller;
+use App\Http\Controllers\SponseredController;
 use App\Http\Controllers\SportsController;
 use App\Http\Controllers\Subcriptioncontroller;
 use App\Http\Controllers\TechnologyController;
@@ -18,7 +21,9 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\The_UnfilteredController;
 use App\Http\Controllers\AuthorsController;
 use App\Http\Controllers\LinkController;
-
+use App\Http\Controllers\ShopController;
+ use App\Http\Controllers\StoryController;
+ use App\Http\Controllers\CartController;
  
 
 Route::get('/dashboard', [The_UnfilteredController::class,'dashboard'])->middleware(['auth', 'verified','user-session'])->name('dashboard');
@@ -138,4 +143,20 @@ Route::get('/subcribe',[Subcriptioncontroller::class,'show'])->name('subcribe.sh
 Route::post('subcribe/unfiltered',[Subcriptioncontroller::class,'store'])->name('subscribe.store');
 Route::get('/search', [Searchcontroller::class, 'showResults'])->name('search.results');
 Route::get('/ajax-search', [Searchcontroller::class, 'ajaxSearch'])->name('search.ajax');
-  require __DIR__.'/auth.php';  
+Route::resource('sponsereds', SponseredController::class);
+Route::resource('shops', ShopController::class);
+Route::get('manage-shops',[ShopController::class,'manageshop'])->name('manage.shops');
+Route::resource('stories',StoryController::class);
+Route::get('stories-manage', [StoryController::class, 'manage'])->name('stories.manage');
+Route::resource('ebooks',EbookController::class);
+Route::middleware('auth')->group(function () {
+    Route::get('/cart', [CartController::class, 'index'])->name('cart.index');
+    Route::post('/cart/add/{id}', [CartController::class, 'add'])->name('cart.add');
+});
+Route::post('/cart/remove/{id}', [CartController::class, 'remove'])->name('cart.remove');
+Route::get('/charts',[ChartController::class,'index'])->name('chart.index');
+Route::get('/SESSIONS',[ChartController::class,'sessionDuration'])->name('session.chart');
+Route::get('search-shops',[SearchController::class,'ShopSearch'])->name('search.shops');
+
+Route::get('ajax-shop',[SearchController::class,'ajaxshop'])->name('ajax.shop');
+require __DIR__.'/auth.php';  

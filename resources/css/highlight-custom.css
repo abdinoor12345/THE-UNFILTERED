@@ -1,0 +1,56 @@
+/* highlight-custom.css */
+pre code {
+    display: block;
+    padding: 1em;
+    background: #f0f0f0;
+    border-radius: 5px;
+    overflow: auto;
+}
+.hljs-comment,
+.hljs-quote {
+    color: #8e908c;
+    font-style: italic;
+}
+.hljs-keyword,
+.hljs-selector-tag,
+.hljs-subst {
+    color: #c82829;
+}
+.hljs-number,
+.hljs-literal,
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag .hljs-attr {
+    color: #f5871f;
+}
+.hljs-string,
+.hljs-doctag {
+    color: #718c00;
+}
+.hljs-title,
+.hljs-section,
+.hljs-selector-id {
+    color: #4271ae;
+}
+.hljs-subst {
+    font-weight: normal;
+}
+.hljs-type,
+.hljs-class .hljs-title {
+    color: #eab700;
+}
+.hljs-symbol,
+.hljs-bullet,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-attr,
+.hljs-link,
+.hljs-params {
+    color: #3e999f;
+}
+.hljs-emphasis {
+    font-style: italic;
+}
+.hljs-strong {
+    font-weight: bold;
+}

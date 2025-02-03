@@ -24,6 +24,7 @@
         <!-- Content/Message -->
         <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center">Your message</label>
         <textarea id="message" name="content" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Type here..." required></textarea>
+        <p id="contentWordCount" class="text-sm text-gray-600 text-center">Word count: 0</p>
 
         <!-- Optional Image URL Field -->
         <label for="image_url" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center">Image URL (Optional)</label>
@@ -37,4 +38,19 @@
         <button type="submit" class="mt-4 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Submit</button>
     </form>
 </div>
+
+<script>
+    const messageField = document.getElementById('message');
+    const wordCountElement = document.getElementById('contentWordCount');
+
+    // Function to update word count
+    const updateWordCount = () => {
+        const wordCount = messageField.value.trim().split(/\s+/).filter(Boolean).length;
+        wordCountElement.textContent = `Word count: ${wordCount}`;
+    };
+
+    // Update word count on input
+    messageField.addEventListener('input', updateWordCount);
+</script>
+
 @endsection

@@ -42,14 +42,20 @@
             </article>
         @endforeach
     </main>
-
+<hr/>
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8 mt-12">
         @foreach($videos as $video)
             <div>
                 <h3 class="text-lg font-bold text-blue-800">{{ $video['title'] }}</h3>
-                <div class="aspect-w-16 aspect-h-9 mt-4">
-                    <iframe src="{{ $video['url'] }}" class="w-full h-full rounded-lg" allowfullscreen></iframe>
-                </div>
+                <p class="text-lemon-600">{{ Str::limit($video->description, 100) }}</p>
+
+                 <div class="aspect-w-16 aspect-h-9 mt-4">
+    <video id="player" playsinline>
+        <source src="{{ $video['url'] }}" type="video/mp4" />
+    </video>
+</div>
+
+                
             </div>
         @endforeach
     </div>
@@ -61,7 +67,29 @@
         </div>
     </div>
     <h2 class="text-2xl font-bold text-center text-green-800 italic">Featured Posts</h2>
-
+<div class="grow">
+<div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4">
+    @foreach($featuredPosts as $featured)
+        <div class="bg-white shadow-md rounded-lg overflow-hidden">
+            @if($featured->image_url)
+                <img src="{{ $featured->image_url }}" class="w-full h-48 object-cover" alt="Image for {{ $featured->title }}">
+            @else
+                <a href="/">
+                    <img src="{{ asset('Images/THE UNFILTERED.png') }}" alt="The Unfiltered Logo" class="w-full object-cover h-auto mr-4">
+                </a>
+            @endif
+            <div class="p-4">
+                <h5 class="text-lg font-bold">{{ $featured->title }}</h5>
+                <p class="text-gray-700">{{ Str::limit($featured->description, 100) }}</p>
+                <div class="mt-4 flex justify-between items-center">
+                    <a href="{{ route('sponsereds.show', $featured->slug) }}" class="bg-blue-500 text-white px-3 py-1 rounded">View</a>
+                 </div>
+            </div>
+        </div>
+    @endforeach
+</div>
+</div>
+<hr/>
 
     <aside class="mt-12">
         <h2 class="text-2xl font-bold text-center text-purple-800">Popular Posts</h2>
@@ -84,4 +112,63 @@
         </div>
     </aside>
 </div>
-@endsection
+<hr/>
+<h1 class="text-center text-light text-2xl text-black">StorySpotlight</h1>
+<div class="row">
+    <div class="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-4 shadow-black">
+        @foreach ($stories as $story)
+        <div class="p-4 bg-white shadow-md rounded-lg">
+            <h3 class="text-lg font-bold text-indigo-600">{{ $story->title }}</h3>
+            <p class="text-gray-600 mt-2">{{ Str::limit($story->content, 100) }}</p>
+            @if($story->image_url)
+            <img src="{{ $story->image_url }}" alt="{{ $story->title }}" class="w-full h-auto mt-4">
+            @endif
+            <div class="text-sm text-gray-500 mt-3">
+            {{-- <span>By {{ $story->author->name }}</span> •  --}}
+            <span>{{ \Carbon\Carbon::parse($story->published_date)->diffForHumans() }}</span>
+
+             </div>
+             <a href="{{ route('stories.show', $story->slug) }}" class="btn btn-primary">Read More</a>
+
+        </div>
+         @endforeach
+    </div>
+</div>
+<hr/>
+ <h1 class="text-2xl font-bold text-blue-800 text-center animate-bounce">View our products</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+    @foreach($products as $product)
+        <div class="p-4 bg-white shadow-md rounded-lg">
+            <a href="{{ route('shops.show', $product->id) }}" class="block">
+                <h3 class="text-lg font-bold text-indigo-600">{{ $product->name }}</h3>
+                <p class="text-gray-600 mt-2">{{ Str::limit($product->description, 100) }}</p>
+                @if($product->image_url)
+                <img src="{{ $product->image_url }}" alt="{{ $product->name }}" class="w-full h-auto mt-4">
+                @endif
+            </a>
+        </div>
+    @endforeach
+</div>
+ </div>
+<hr/>
+<h1 class="text-2xl font-bold text-center text-red-800">Exclusive Ebooks</h1>
+<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 mt-4">
+    @foreach($ebooks as $ebook)
+        <div class="p-4 bg-white shadow-md rounded-lg">
+                 <h3 class="text-lg font-bold text-indigo-600">{{ $ebook->title }}</h3>
+                <p class="text-gray-600 mt-2">{{ Str::limit($ebook->description, 100) }}</p>
+                @if($ebook->cover_image_url)
+                <img src="{{ $ebook->cover_image_url }}" alt="{{ $ebook->title }}" class="w-full h-auto mt-4">
+                @endif
+            </a>
+            <div class="text-sm text-gray-500 mt-3">
+                <span>{{ \Carbon\Carbon::parse($ebook->published_date)->diffForHumans() }}</span>
+            </div>
+            <a href="{{ route('ebooks.show', $ebook->id) }}" class="btn btn-primary">Read More</a>
+
+        </div>
+    @endforeach
+</div><hr/>
+
+ 
+ @endsection

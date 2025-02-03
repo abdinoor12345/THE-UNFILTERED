@@ -12,7 +12,7 @@
     @vite('resources/css/app.css')
     @vite('resources/js/app.js')
     <link href="https://fonts.googleapis.com/css?family=Montserrat:700,900" rel="stylesheet">
-
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.css">
     <link href="{{ asset('css/app.css') }}" rel="stylesheet">
     <style>
         body { font-family: 'Roboto', sans-serif; 

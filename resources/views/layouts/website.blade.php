@@ -1,16 +1,17 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
+<!DOCTYPE html> @vite('resources/css/app.css')
+<html lang="{{ str_replace('_', '-', app()->getLocale()) }}"> 
+ <head>
+    @vite('resources/js/app.js')
+    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,900" rel="stylesheet">
+
+   <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+   @vite(['resources/js/app.js', 'resources/js/hljs.js', 'resources/css/highlight-custom.css','resources/sass/app.scss'])
+     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@yield('title', 'The Unfiltered, Global News Agency')</title>
     <link rel="icon" href="{{ asset('images/THE UNFILTERED.png') }}" type="image/x-icon">
     <link href="{{ mix('css/app.css') }}" rel="stylesheet">
-    @vite('resources/css/app.css')
-    @vite('resources/js/app.js')
-    <link href="https://fonts.googleapis.com/css?family=Montserrat:700,900" rel="stylesheet">
-
-    <link href="{{ asset('css/app.css') }}" rel="stylesheet">
+   
     <head>  <script src="https://cdn.tailwindcss.com"></script>
         <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css">
 
@@ -102,6 +103,8 @@ background: #e3e3ea;
                          <a href="{{ route('technology.index') }}" class="font-bold text-xl text-black hover:text-gray-900">Technology</a>
                         <a href="{{ route('business') }}" class="font-bold text-xl text-black hover:text-gray-900">Business</a>
                         <a href="{{ route('video') }}" class="font-bold text-xl text-black hover:text-gray-900">Videos</a>
+                        <a href="{{ route('stories.index') }}" class="font-bold text-xl text-black hover:text-gray-900">Stories</a>
+
                         <form action="{{ route('search.results') }}" method="GET" class="mb-8 rounded-xl shadow">
                             <input type="text" name="query" id="search-query" class="border p-2 w-full mb-10 rounded shadow" placeholder="Search..." autocomplete="off">
                         </form>
@@ -116,7 +119,7 @@ background: #e3e3ea;
                             <button type="submit" class="text-gray-500 hover:text-gray-900 pl-2">Logout</button>
                         </form>
                     @else
-                        <a href="{{ route('register') }}" class="text-primary ring-2 500 font-bold text-lg hover:text-gray-900 pr-2 button button-primary">Sign Up</a>
+                        <a href="{{ route('register') }}" class="btn btn-outline-primary 500 font-bold text-lg hover:text-gray-900 pr-2">Sign Up</a>
                     @endauth
                 </div>
                 <!-- Mobile Menu Button -->
@@ -165,15 +168,23 @@ background: #e3e3ea;
 
     <!-- Main Content -->
     <main class="py-20">
+        <h1 class="text-2xl text-center text-pink-400 font-light font-serif">@yield('title')</h1>
+        <div class="flex flex-row gap-4 mt-4 shadow-lg bg-white rounded-lg justify-between mx-10 px-20 py-2">
+            <p class="text-xl font-bold text-blue-500 underline"><a class="underline" href="shops">The Storefront</a></p>
+            <p class="text-xl font-bold text-blue-500"><a class="underline" href="stories">Story Spotlight</a></p>
+            <p class="text-xl font-bold text-blue-500"><a href="/ebooks">E-books</a></p>
+        </div>
         <div class="bg-blue-200"id="live-search-results"></div>
+        <div class="bg-blue-200"id="live-search-result"></div>
+
         
         @yield('content')
     </main>
     <div class="bg-light p-8 rounded-lg shadow-md text-center mx-2 ">
        <span class="flex flex-grow gap-8 justify-center">
  
-         <button class="btn btn-success font-extrabold  bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-200">
-        <a href="/subcribe"> Subcribe </a>    
+         <button class="btn btn-success font-extrabold   text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-200">
+        <a class="text-white" href="/subcribe"> Subcribe </a>    
         </button> <button    class="btn btn-success font-extrabold  bg-blue-600 text-white py-2 px-4 rounded-full hover:bg-blue-600 transition duration-200">
            <a href="/advertise-with-us" class="text-white "> Advertise With Us</a>
                 </button>

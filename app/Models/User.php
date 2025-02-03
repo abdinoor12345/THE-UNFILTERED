@@ -66,4 +66,7 @@ class User extends Authenticatable
     public function business(){
         return $this->hasMany(Business::class,'user_id');
     }
+    public function sponsered(){
+        return $this->hasMany(Sponsered::class,'user_id');
+    }
 }

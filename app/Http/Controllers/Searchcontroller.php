@@ -2,8 +2,10 @@
 
 namespace App\Http\Controllers;
 use App\Models\Link;
+use App\Models\Shop;
 use App\Models\Sport;
 use App\Models\Opinion;
+use App\Models\Story;
 use App\Models\Trending;
 use App\Models\Technology;
 use App\Models\Business;
@@ -55,6 +57,9 @@ public function ajaxSearch(Request $request)
     $sports = Sport::where('title', 'LIKE', "%{$query}%")
     ->orWhere('description', 'LIKE', "%{$query}%")
     ->get();
+    $stories = Story::where('title', 'LIKE', "%{$query}%")
+    ->orWhere('description', 'LIKE', "%{$query}%")
+    ->get();
 
 $politics = Opinion::where('title', 'LIKE', "%{$query}%")
         ->orWhere('description', 'LIKE', "%{$query}%")
@@ -77,7 +82,31 @@ $topStories = Top_Story::where('title', 'LIKE', "%{$query}%")
            ->get();
 
 return view('search.ajax_results', compact(
-  'sports', 'politics', 'trendings', 'technologies', 'businesses', 'topStories','links'
+  'sports','stories', 'politics', 'trendings', 'technologies', 'businesses', 'topStories','links'
 ));
 }
+public function ShopSearch(Request $request){
+  $request->validate([
+    'query' => 'required|string|min:1',
+]);
+$query = $request->input('query');
+$shops = Shop::where('name', 'LIKE', "%{$query}%")
+       ->orWhere('description', 'LIKE', "%{$query}%")
+       ->orwhere('category', 'LIKE', "%{$query}%")->orwhere('type', 'LIKE', "%{$query}%")
+       ->orwhere('brand', 'LIKE', "%{$query}%")
+       ->get();
+       return view('search.shops', compact('shops'));
+ }
+ public function ajaxshop(Request $request){ 
+     $query = $request->input('query');
+     $shops = Shop::where('name', 'LIKE', "%{$query}%")
+     ->orWhere('description', 'LIKE', "%{$query}%")
+     ->orWhere('category', 'LIKE', "%{$query}%")
+     ->orWhere('type', 'LIKE', "%{$query}%")
+     ->orWhere('brand', 'LIKE', "%{$query}%")
+
+     ->get();
+ return view('search.ajax_shops',compact('shops'));
+
+ }
 }

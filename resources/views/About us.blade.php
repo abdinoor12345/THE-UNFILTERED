@@ -20,6 +20,9 @@
             <p class="text-gray-700">
                 At The Unfiltered, we are passionate about bringing you the latest insights, trends, and analysis from the world of politics, business, technology, and sports. Our goal is to provide our readers with accurate, engaging, and informative content that sparks discussion and drives awareness on important issues.
             </p>
+            <br>
+            <p class="text-gray-700">The Unfiltered readers are business leaders,politicians and next generation of business and  leaders.
+            </p>
         </section>
 
         <section class="mb-8">

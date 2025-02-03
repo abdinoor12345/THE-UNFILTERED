@@ -58,7 +58,7 @@
         <p class="text-lg text-gray-700 mb-4 font-medium">Interested in advertising? Contact us today!</p>
         <div class="text-lg">
             <p>Email: <a href="mailto:advertising@theunfiltered.com" class="text-blue-500 underline">advertising@theunfiltered.com</a></p>
-            <p>Phone: <a href="tel:+1234567890" class="text-blue-500 underline">+123 456 7890</a></p>
+            <p>Phone: <a href="tel:+1234567890" class="text-blue-500 underline">+254 782857893</a></p>
             <p>Address: 1234 News St, Nairobi City, Kenya</p>
         </div>
     </section>

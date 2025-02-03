@@ -29,7 +29,7 @@
                     <h1 class="text-sm font-bold">Basketball</h1>
                 </a>
             </div>
-
+<a  class="text-center font-bold text-pink-500 animate-pulse" href="https://www.koora-live.vip/">Live Updates</a>
             <h1 class="text-lg text-white text-center font-bold mt-4 bg-green-300">
                 <a href="{{ route('sports.show', $latest->slug) }}" class="text-blue-600 hover:underline">
                     {{ $latest->title }}

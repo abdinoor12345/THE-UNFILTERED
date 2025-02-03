@@ -2,10 +2,14 @@
 
 namespace App\Http\Controllers;
 use App\Models\Business;
+use App\Models\Ebook;
 use App\Models\Like;
 use App\Models\Link;
 use App\Models\Opinion;
+use App\Models\Shop;
+use App\Models\Sponsered;
 use App\Models\Sport;
+use App\Models\Story;
 use App\Models\Technology;
 use App\Models\Top_Story;
 use App\Models\User;
@@ -19,6 +23,8 @@ use Jorenvh\Share\ShareFacade as Share;
 use Illuminate\Support\Facades\DB;
 use Carbon\Carbon;
 use App\Http\Requests\NewsUpdateRequest;
+use Illuminate\Support\Facades\Cache;
+
 class The_UnfilteredController extends Controller
 {
     public function dashboard(){
@@ -73,23 +79,75 @@ class The_UnfilteredController extends Controller
         return redirect()->back()->with('message', 'News submitted successfully!');
     }
     
+ 
     public function get_news() {
-        $shareButtons = Share::page(
-            'https://unfiltered.com',    
-            'THE UNFILTERED'    
-        )
-        ->facebook()
-        ->twitter()
-        ->linkedin()
-        ->telegram()
-        ->whatsapp();
-        $videos=Video::orderBy('created_at','desc')->take(2)->get();
-
-         $latest=Trending::orderBy('created_at','desc')->first();
-       $news = Trending::orderBy('created_at', 'desc')->take(10)->get();
-       $popularPosts = Trending::orderBy('views', 'desc')->take(3)->get();   
-      return view('welcome', ['news' => $news,'latest'=>$latest,'popularPosts'=>$popularPosts,'videos'=>$videos,'shareButtons'=>$shareButtons]);
-  }
+        // Caching for share buttons (if the same on every page load)
+        $shareButtons = Cache::remember('share_buttons', now()->addMinutes(10), function () {
+            return Share::page(
+                'https://unfiltered.com',
+                'THE UNFILTERED'
+            )
+            ->facebook()
+            ->twitter()
+            ->linkedin()
+            ->telegram()
+            ->whatsapp();
+        });
+    
+        // Caching product data
+        $products = Cache::remember('latest_products', now()->addMinutes(10), function () {
+            return Shop::orderBy('created_at', 'desc')->take(10)->get();
+        });
+    
+        // Caching video data
+        $videos = Cache::remember('latest_videos', now()->addMinutes(10), function () {
+            return Video::orderBy('created_at', 'desc')->take(2)->get();
+        });
+    
+        // Caching trending news
+        $news = Cache::remember('latest_news', now()->addMinutes(10), function () {
+            return Trending::orderBy('created_at', 'desc')->take(10)->get();
+        });
+    
+        // Caching latest trending post
+        $latest = Cache::remember('latest_trending', now()->addMinutes(10), function () {
+            return Trending::orderBy('created_at', 'desc')->first();
+        });
+    
+        // Caching featured posts
+        $featuredPosts = Cache::remember('featured_posts', now()->addMinutes(10), function () {
+            return Sponsered::orderBy('created_at', 'desc')->take(10)->get();
+        });
+    
+        // Caching popular posts
+        $popularPosts = Cache::remember('popular_posts', now()->addMinutes(10), function () {
+            return Trending::orderBy('views', 'desc')->take(3)->get();
+        });
+    
+        // Caching stories
+        $stories = Cache::remember('latest_stories', now()->addMinutes(10), function () {
+            return Story::orderBy('created_at', 'desc')->take(3)->get();
+        });
+    
+        // Caching ebooks
+        $ebooks = Cache::remember('latest_ebooks', now()->addMinutes(10), function () {
+            return Ebook::orderBy('created_at', 'desc')->take(3)->get();
+        });
+    
+        // Return the view with cached data
+        return view('welcome', [
+            'news' => $news,
+            'latest' => $latest,
+            'popularPosts' => $popularPosts,
+            'videos' => $videos,
+            'featuredPosts' => $featuredPosts,
+            'shareButtons' => $shareButtons,
+            'ebooks' => $ebooks,
+            'products' => $products,
+            'stories' => $stories
+        ]);
+    }
+    
   public function show($slug)
   {
        $post = Trending::where('slug', $slug)->firstOrFail();
@@ -189,315 +247,7 @@ public function TrendingNow(){
 }
  
  
-//  public function admin(){
-    
-//     $lastMonth = Carbon::now()->subMonth();
-//     $query = DB::table('trendings')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')->unionAll(
-//         DB::table('top__stories')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     )->unionAll(
-//         DB::table('opinions')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     )->unionAll(
-//         DB::table('businesses')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     )->unionAll(
-//         DB::table('sports')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     )->unionAll(
-//         DB::table('hockeys')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     )->unionAll(
-//         DB::table('basketballs')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     )->unionAll(
-//         DB::table('crickets')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     )->unionAll(
-//         DB::table('soccers')->where('created_at', '>=', $lastMonth)->selectRaw('COUNT(*) as count')
-//     );
-
-// $totalPosts = DB::table(DB::raw("({$query->toSql()}) as counts"))
-// ->mergeBindings($query)  
-// ->sum('count');
-// // last week
-// $lastweek = Carbon::now()->subWeek();
-// $query = DB::table('trendings')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')->unionAll(
-//     DB::table('top__stories')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// )->unionAll(
-//     DB::table('opinions')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// )->unionAll(
-//     DB::table('businesses')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// )->unionAll(
-//     DB::table('sports')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// )->unionAll(
-//     DB::table('hockeys')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// )->unionAll(
-//     DB::table('basketballs')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// )->unionAll(
-//     DB::table('crickets')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// )->unionAll(
-//     DB::table('soccers')->where('created_at', '>=', $lastweek)->selectRaw('COUNT(*) as count')
-// );
-
-// $totalLastWeekPosts = DB::table(DB::raw("({$query->toSql()}) as counts"))
-// ->mergeBindings($query)  
-// ->sum('count');
-
-//     $authorcount=User::role('An author')->count();
-//     $users=User::count();
-//     $lastMonth = Carbon::now()->subMonth();
-
-// // Query to sum views from all relevant tables for the past month
-// $query = DB::table('trendings')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')->unionAll(
-//     DB::table('top__stories')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// )->unionAll(
-//     DB::table('opinions')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// )->unionAll(
-//     DB::table('businesses')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// )->unionAll(
-//     DB::table('sports')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// )->unionAll(
-//     DB::table('hockeys')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// )->unionAll(
-//     DB::table('basketballs')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// )->unionAll(
-//     DB::table('crickets')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// )->unionAll(
-//     DB::table('soccers')->where('created_at', '>=', $lastMonth)->selectRaw('SUM(views) as views_sum')
-// );
-
-// // Sum the views from the union query results
-// $totalMonthlyViews = DB::table(DB::raw("({$query->toSql()}) as views_counts"))
-//     ->mergeBindings($query)
-//     ->sum('views_sum');
-//     $lastMonth = Carbon::now()->subMonth();
-
-// // Query to get the sum of views for each table with the table name for the past month
-// $query = DB::table('trendings')
-//     ->where('created_at', '>=', $lastMonth)
-//     ->selectRaw("'trendings' as table_name, SUM(views) as views_sum")
-//     ->unionAll(
-//         DB::table('top__stories')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'top__stories' as table_name, SUM(views) as views_sum")
-//     )
-//     ->unionAll(
-//         DB::table('opinions')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'opinions' as table_name, SUM(views) as views_sum")
-//     )
-//     ->unionAll(
-//         DB::table('businesses')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'businesses' as table_name, SUM(views) as views_sum")
-//     )
-//     ->unionAll(
-//         DB::table('sports')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'sports' as table_name, SUM(views) as views_sum")
-//     )
-//     ->unionAll(
-//         DB::table('hockeys')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'hockeys' as table_name, SUM(views) as views_sum")
-//     )
-//     ->unionAll(
-//         DB::table('basketballs')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'basketballs' as table_name, SUM(views) as views_sum")
-//     )
-//     ->unionAll(
-//         DB::table('crickets')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'crickets' as table_name, SUM(views) as views_sum")
-//     )
-//     ->unionAll(
-//         DB::table('soccers')
-//             ->where('created_at', '>=', $lastMonth)
-//             ->selectRaw("'soccers' as table_name, SUM(views) as views_sum")
-//     );
-
-//  $mostViewedTable = DB::table(DB::raw("({$query->toSql()}) as views_counts"))
-//     ->mergeBindings($query)
-//     ->orderByDesc('views_sum')
-//     ->first();
-//     $recentlyEditedTimeframe = Carbon::now()->subDays(2);
-
-//     // Union query to fetch recently edited records across multiple tables
-//     $query = DB::table('trendings')
-//         ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//         ->select('updated_at', DB::raw("'trendings' as table_name"))
-//         ->unionAll(
-//             DB::table('top__stories')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'top__stories' as table_name"))
-//         )->unionAll(
-//             DB::table('opinions')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'opinions' as table_name"))
-//         )->unionAll(
-//             DB::table('businesses')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'businesses' as table_name"))
-//         )->unionAll(
-//             DB::table('sports')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'sports' as table_name"))
-//         )->unionAll(
-//             DB::table('hockeys')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'hockeys' as table_name"))
-//         )->unionAll(
-//             DB::table('basketballs')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'basketballs' as table_name"))
-//         )->unionAll(
-//             DB::table('crickets')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'crickets' as table_name"))
-//         )->unionAll(
-//             DB::table('soccers')
-//                 ->where('updated_at', '>=', $recentlyEditedTimeframe)
-//                 ->select('updated_at', DB::raw("'soccers' as table_name"))
-//         );
-    
-//     // Execute the union query and get only the most recent record
-//     $lastEditedContent = DB::table(DB::raw("({$query->toSql()}) as recent_edits"))
-//         ->mergeBindings($query)
-//         ->orderBy('updated_at', 'desc')
-//         ->first();
-    
-//     // Check if there's any recent edit
-//     if ($lastEditedContent) {
-//         $lastEditedTableName = $lastEditedContent->table_name;
-//         $lastEditedTime = $lastEditedContent->updated_at;
-//     } else {
-//         $lastEditedTableName = null;
-//         $lastEditedTime = null;
-//     }
-     
-//   // Define the start of the current month
-// $startOfMonth = Carbon::now()->startOfMonth();
-
-// // Union query to count posts by authors with the "An author" role across multiple tables
-// $topAuthorThisMonthQuery = DB::table('trendings')
-//     ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//     ->where('created_at', '>=', $startOfMonth)
-//     ->whereIn('user_id', function($query) {
-//         $query->select('model_id')
-//               ->from('model_has_roles')
-//               ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//               ->where('roles.name', 'An author');
-//     })
-//     ->groupBy('user_id')
-//     ->unionAll(
-//         DB::table('top__stories')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     )
-//     ->unionAll(
-//         DB::table('opinions')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     )
-//     ->unionAll(
-//         DB::table('businesses')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     )
-//     ->unionAll(
-//         DB::table('sports')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     )
-//     ->unionAll(
-//         DB::table('hockeys')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     )
-//     ->unionAll(
-//         DB::table('basketballs')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     )
-//     ->unionAll(
-//         DB::table('crickets')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     )
-//     ->unionAll(
-//         DB::table('soccers')
-//             ->select('user_id', DB::raw('COUNT(*) as post_count'))
-//             ->where('created_at', '>=', $startOfMonth)
-//             ->whereIn('user_id', function($query) {
-//                 $query->select('model_id')
-//                       ->from('model_has_roles')
-//                       ->join('roles', 'roles.id', '=', 'model_has_roles.role_id')
-//                       ->where('roles.name', 'An author');
-//             })
-//             ->groupBy('user_id')
-//     );
-
-// // Execute the union query to find the top author
-// $topAuthorThisMonth = DB::table(DB::raw("({$topAuthorThisMonthQuery->toSql()}) as combined"))
-//     ->mergeBindings($topAuthorThisMonthQuery)
-//     ->select('user_id', DB::raw('SUM(post_count) as total_posts'))
-//     ->groupBy('user_id')
-//     ->orderBy('total_posts', 'desc')
-//     ->first();
-
-// // Fetch the user details for the top author, if any
-// $topAuthorThisMonth = $topAuthorThisMonth ? User::find($topAuthorThisMonth->user_id)->setAttribute('total_posts', $topAuthorThisMonth->total_posts) : null;
-
  
-//     return view('AdminDashboard',compact('authorcount','users','totalPosts',
-//     'totalLastWeekPosts','totalMonthlyViews','mostViewedTable','lastEditedTableName', 'lastEditedTime',
-// 'topAuthorThisMonth'));
-// }
-// creating dynamic post
 public function like(Request $request, $type, $id)
 {
     // Define the model classes for each post type

@@ -24,6 +24,9 @@
         <!-- Content/Message -->
         <label for="message" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center">Your message</label>
         <textarea id="message" name="content" rows="16" class="block p-2.5 w-full text-sm text-gray-900 bg-gray-50 rounded-sm border border-gray-900 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="Type here..." required></textarea>
+        
+        <!-- Word Count Display -->
+        <p id="wordCount" class="text-center text-sm text-gray-600 mt-2">Word Count: 0</p>
 
         <!-- Optional Image URL Field -->
         <label for="image_url" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center">Image URL (Optional)</label>
@@ -32,6 +35,8 @@
         <!-- Optional Link Field -->
         <label for="link" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center">Link (Optional)</label>
         <input type="url" id="link" name="important_link" class="block w-full p-4 text-gray-900 border border-blue-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-800 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" placeholder="https://example.com">
+        
+        <!-- Category Selection -->
         <label for="category" class="block mb-2 text-sm font-medium text-gray-900 dark:text-white text-center">Category</label>
         <select name="category" id="category" class="block w-full p-4 text-gray-900 border border-blue-300 rounded-lg bg-gray-50 text-base focus:ring-blue-500 focus:border-blue-800 dark:bg-gray-700 dark:border-gray-600 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500" required>
             <option value="sport">Sport</option>
@@ -39,10 +44,19 @@
             <option value="basketball">Basketball</option>
             <option value="cricket">Cricket</option>
             <option value="hockey">Hockey</option>
-
         </select>
+
         <!-- Submit Button -->
         <button type="submit" class="mt-4 px-4 py-2 text-white bg-blue-600 rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-50">Submit</button>
     </form>
 </div>
+
+<script>
+    // Word count function
+    document.getElementById('message').addEventListener('input', function() {
+        var text = this.value.trim();
+        var wordCount = text.length > 0 ? text.split(/\s+/).length : 0;
+        document.getElementById('wordCount').textContent = "Word Count: " + wordCount;
+    });
+</script>
 @endsection

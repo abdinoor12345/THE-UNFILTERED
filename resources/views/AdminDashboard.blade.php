@@ -3,11 +3,7 @@
 
 @section('title', 'Dashboard')
  <style>
-    .number-container {
-    position: relative; 
-    display: inline-block;  
-}
-
+ 
 .total-posts {
     font-size: 3rem;  
     font-family: serif;  
@@ -23,13 +19,13 @@
     right: -0.75rem;  
     font-size: 1.5rem;  
     color: blue;  
+} .chart-container {
+    margin-top: 100px;
 }
 
  </style>
 @section('content')
-    <div class="border-b border-gray-300 mb-6 pb-4">
-        
-    </div>
+ 
 
     <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
         <div class="bg-white rounded-lg shadow overflow-hidden">
@@ -166,5 +162,36 @@
             
 </div> 
 </div>
- </div>
-@endsection
+@include('charts.index')
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+{!! $chart->script() !!}
+<div class="chart-container h-auto w-64 py-6">
+    <h1 class="text-2xl font-bold text-center mb-4 mt-8">Table  Views for the Past 6 Months</h1>
+    <h2 class="text-lg font-semibold text-center mt-6"><strong>Total Views past 6 months:</strong> {{ $totalViews }}</h2>
+<div class="h-auto w-64">
+    {!! $pie->container() !!}</div>
+ </div></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+{!! $pie->script() !!}
+<div class="flex flex-col gap-6 mt-32 lg:flex-row"> <div class="chart-container w-1/2">
+        {!! $article->container() !!}
+        <h1 class="text-2xl font-bold text-center mb-4">Top Performing Articles</h1>
+    </div>
+
+    <div class="chart-container w-1/2">
+        <h1 class="text-2xl font-bold text-center mb-4">Average Session Duration</h1>
+             {!! $session->container() !!}
+            <h1>Total Time: {{ $formattedTotalTime }}</h1>
+
+      </div>
+</div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"></script>
+{!! $article->script() !!}
+{!! $session->script() !!}
+
+
+</div>
+<hr/>
+ @endsection

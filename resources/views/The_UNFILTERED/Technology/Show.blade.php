@@ -35,7 +35,7 @@
 
 @section('content')
 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mt-16">
-    <h1 class="text-2xl font-bold text-blue-800 text-center">{{ $post->title }}</h1>
+    <h1 class="text-2xl font-bold text-blue-800 text-center border border-lime-400 bg-slate-400">{{ $post->title }}</h1>
     <p class="text-gray-700 text-sm font-bold text-center mb-4">{{ $post->description }}</p>
     <span class="text-center text-black font-bold ">{{ $post->views }} views</span>
     <span class="text-center text-black font-bold  m-2 "> 
@@ -79,6 +79,16 @@
         </div>
         @endforeach
     </div>
+    <div class="code-snippet">
+      <pre><code class="language-javascript">
+          // Example JavaScript code
+          function greet(name) {
+              console.log(`Hello, ${name}!`);
+          }
+
+          greet('World');
+      </code></pre>
+  </div>
   </div>
   
 @endsection

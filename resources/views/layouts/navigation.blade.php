@@ -30,8 +30,11 @@
                     <x-nav-link :href="route('sports.get')" :active="request()->routeIs('sports.get')">
                         {{ __('Sports News') }}
                     </x-nav-link>
-                    <x-nav-link :href="route('sports.get')" :active="request()->routeIs('sports.get')">
+                    <x-nav-link :href="route('sponsereds.index')" :active="request()->routeIs('sponsereds.index')"  >
                         {{ __('Sponsered') }}
+                    </x-nav-link>
+                    <x-nav-link :href="route('cart.index')" :active="request()->routeIs('cart.index')" class="animate-bounce text-blue-700">
+                        {{ __('Carts') }}
                     </x-nav-link>
                 </div>
             </div>
